@@ -101,7 +101,7 @@
             var cat =  ($('#category').val());
             // console.log(cat);
             var URL = "<?php echo $this->Url->build('/articles/bb/');?>"+name+'/'+cat;
-            console.log(URL);
+            // console.log(URL);
             $.ajax({
                 url: URL,
                 type: 'GET',
@@ -109,8 +109,15 @@
                 success: function(response){
                     // console.log(response);
                     $.each(response, function(key,value){
-                        var f = value;
-                        console.log(f);
+                        $.each(response, function(k,v){
+                            var f = v;
+                            console.log(f);
+                            if (key == 'title' || key == 'body')
+                            {
+                                $('#user').html('');
+                                $('#render-tbody').append("<td>"+f+"</td");
+                            }
+                        });
                     });
                      // $('#user').html('');
                 }

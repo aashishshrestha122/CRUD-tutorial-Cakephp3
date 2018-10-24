@@ -10,13 +10,24 @@
             // echo $this->Form->control('end date',['id' => 'picker', 'autocomplete' => 'off']);
             echo $this->Form->select('category_id', $categories,['id' => 'category', 'empty' =>'(choose category)']);
         ?>
+        <select id="user">
+            <option></option>
+        </select>
         
     </fieldset>
     <!-- <?= $this->Form->button(__('Search')) ?> -->
     <?= $this->Form->end() ?>
     <div id="div1">
-        <table id="table">
-            
+        <table id="table" border="1">
+            <thead>
+                <tr>
+                <th>Title</th>
+                <th>Body</th>
+                </tr>
+            </thead>
+            <tbody id="render-tbody">
+                
+            </tbody>
         </table>
     </div>
 </div>
@@ -50,7 +61,10 @@
             }
             else
             {
+                $('#user').html('');
+                $('#render-tbody').html('');
                 var id = ($(this).val());
+                console.log();
             }
             var formURL = "<?php echo $this->Url->build('/articles/aa/');?>"+id;
             // console.log(formURL);
@@ -59,18 +73,51 @@
                 type: 'GET',
                 dataType: 'json',
                 success:function(response){
-                    console.log(response);
-                    $.each( response, function( key, value ) {
+                    // console.log(response);
+                    $.each( response.query, function( key, value ) {
+                        $('#render-tbody').append("<tr>");
                         $.each( value, function( k, v ) {
-                         var a = k + ": " + v ;.
-                         $('#table').html(a);
-                            
+                            var a =  v ;
+                            if (k == 'title' || k == 'body')
+                            {
+                                $('#render-tbody').append("<td>"+a+"</td>");
+                            }    
                         });
+                        $('#render-tbody').append("</tr>");
                     });
+                    $.each(response.user, function(key, value){
+                        var d = value;
+                        // console.log(d);
+                        $('#user').append("<option value ="+key+">"+d+"</option");
+                    });
+
                 }
             });
         });
-        // $('#').html('awerawerwaer');
+
+        $('#user').change(function(event){
+
+            var name = ($('#user').val());
+            // console.log(name);
+            var cat =  ($('#category').val());
+            // console.log(cat);
+            var URL = "<?php echo $this->Url->build('/articles/bb/');?>"+name+'/'+cat;
+            console.log(URL);
+            $.ajax({
+                url: URL,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response){
+                    // console.log(response);
+                    $.each(response, function(key,value){
+                        var f = value;
+                        console.log(f);
+                    });
+                     // $('#user').html('');
+                }
+            });
+        });
+        
 </script>
 
 

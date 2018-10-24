@@ -150,7 +150,7 @@ class ArticlesController extends AppController
     {
         // All registered users can add articles
         // Prior to 3.4.0 $this->request->param('action') was used.
-        if (in_array($this->request->getParam('action'), ['add', 'index', 'search', 'searchform','latest','view'])) {
+        if (in_array($this->request->getParam('action'), ['add', 'index', 'search', 'searchform','latest','view', 'aa','bb'])) {
             return true;
         }
         // The owner of an article can edit and delete it
@@ -247,8 +247,21 @@ class ArticlesController extends AppController
     public function aa($category_id)
     {
         $query = $this->Articles->find()->where(['category_id' => $category_id])->toArray();
+        $userIds = $this->Articles->find('list', ['keyField' => 'id', 'valueField' => 'user_id'])->where(['category_id' => $category_id])->group(['user_id'])->toArray();
+        // $userIds = $this->Articles->find()->where(['category_id' => $category_id])->select(['user_id'])->group(['user_id'])->toArray();
+        $user = $this->Articles->Users->find('list', ['keyField' => 'id', 'valueField' => 'username'])->where(['id IN' => $userIds])->toArray();
+        // debug($user);die();
+        $main['user'] = $user;
+        $main['query'] = $query;
+
+        $this->set('output', $main);
+        $this->set('_serialize', 'output');
+    }
+    public function bb($username, $category_id)
+    {
+        $query = $this->Articles->find()->where(['user_id' => $username ,'category_id' => $category_id])->toArray();
+
         // debug($query);die();
-       
         $this->set('output', $query);
         $this->set('_serialize', 'output');
     }

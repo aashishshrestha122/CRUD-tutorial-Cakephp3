@@ -61,6 +61,7 @@
             else
             {
                 $('#user').html('');
+                $('#user').append('<option value>(choose user)</option>');
                 $('#render-tbody').html('');
                 var id = ($(this).val());
                 console.log();
@@ -95,33 +96,42 @@
         });
 
         $('#user').change(function(event){
+            if($('#user').val() == "" )
+            {
 
-            var name = ($('#user').val());
-            // console.log(name);
-            var cat =  ($('#category').val());
-            // console.log(cat);
-            var URL = "<?php echo $this->Url->build('/articles/bb/');?>"+name+'/'+cat;
-            // console.log(URL);
-            $.ajax({
-                url: URL,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response){
-                    // console.log(response);
-                    $.each(response, function(key,value){
-                        $.each(response, function(k,v){
-                            var f = v;
-                            console.log(f);
-                            if (key == 'title' || key == 'body')
-                            {
-                                $('#user').html('');
-                                $('#render-tbody').append("<td>"+f+"</td");
-                            }
+            }
+            else
+            {
+                var name = ($('#user').val());
+                // console.log(name);
+                var cat =  ($('#category').val());
+                // console.log(cat);
+                var URL = "<?php echo $this->Url->build('/articles/bb/');?>"+name+'/'+cat;
+                // console.log(URL);
+                $.ajax({
+                    url: URL,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response){
+                        // console.log(response);
+                        $('#render-tbody').html('');
+                        $.each(response, function(key,value){
+                            // console.log(value);
+                            $('#render-tbody').append("<tr>");
+                            $.each(value, function(k,v){
+                                var f = v;
+                                // console.log(f);
+                                if (k == 'title' || k == 'body')
+                                {
+                                    $('#render-tbody').append("<td>"+f+"</td");
+                                }
+                            });
+                             $('#render-tbody').append("</tr>");
                         });
-                    });
-                     // $('#user').html('');
-                }
-            });
+                         // $('#user').html('');
+                    }
+                });
+            }
         });
         
 </script>
